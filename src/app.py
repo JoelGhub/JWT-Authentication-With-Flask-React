@@ -11,12 +11,15 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 
-#from models import Person
+
+app = Flask(__name__)
+
 
 ENV = os.getenv("FLASK_ENV")
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
-app = Flask(__name__)
+
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -32,6 +35,11 @@ db.init_app(app)
 
 # Allow CORS requests to this API
 CORS(app)
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+jwt = JWTManager(app)
+
 
 # add the admin
 setup_admin(app)
